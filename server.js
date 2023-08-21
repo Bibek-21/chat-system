@@ -4,7 +4,9 @@ const mysqlHelper = require('./helper/mysqlhelper');
 const app = express();
 app.use(express.json());
 
-
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/signup.html');
+//   });
 
 const mainroute = require("./routes/index");
 const dotenv = require("dotenv");

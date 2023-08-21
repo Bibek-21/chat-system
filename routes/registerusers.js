@@ -7,7 +7,8 @@
     const user= require("../controllers/methods/registerUsers/index")
 
     router.post('/createuser',user.createUser);
-   
+
+  
 
     module.exports=router;
 
