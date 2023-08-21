@@ -45,10 +45,10 @@ const bcrypt = require("bcrypt");
                             message: "unsuccessful  while storing loginned user",
                         })
                     }
-                    res.status(200).send({
-                        message: 'successfully Logged In',
-                        token: token
-                    })
+                    // res.status(200).send({
+                    //     message: 'successfully Logged In',
+                    //     token: token
+                    // })
                 }
 
             }
