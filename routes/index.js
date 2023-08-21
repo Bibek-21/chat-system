@@ -4,9 +4,12 @@
     const express = require("express");
     const router = express.Router();
 
-    const user = require('./registerusers');
+    const register = require('./registerusers');
+    const login = require("./loginusers")
    
-    router.use('/users', user);
+    router.use('/register', register);
+    router.use('/login',login)
+    router.use("/verify")
   
 
     

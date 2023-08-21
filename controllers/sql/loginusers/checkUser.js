@@ -5,11 +5,12 @@ const mysqlHelper = require("../../../helper/mysqlhelper");
 (() => {
     module.exports = async (email) => {
         try {
-            const sqlquery = sqlstring.format("select email,password  from registerusers where email= ?", [email]);
+            const sqlquery = sqlstring.format("select uuid,email,password  from registerusers where email= ?", [email]);
 
             const [user] = await mysqlHelper.query(sqlquery);
 
-            if (user[0].length === 0 ) {
+
+            if (user.length === 0 ) {
                 return false; // Return a specific value indicating no info was found
               }
 

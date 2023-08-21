@@ -20,6 +20,8 @@ const bcrypt = require("bcrypt");
 
             };
 
+            // const duplicateData = checkDuplicate(email)
+
 
             const content = await sql.createUser(obj);
             if (content == true) {

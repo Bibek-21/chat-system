@@ -1,20 +1,20 @@
 
 
 "use strict";
-const login = require('../../sql/loginusers/index');
+const sql = require('../../sql/loginusers/index');
+const jWT = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 const checkUser = require("../../sql/loginusers/checkUser");
 const bcrypt = require("bcrypt");
-const dotenv= require("dotenv")
-dotenv.config();
+
 
 
 
 (() => {
     module.exports = async (req, res, next) => {
         try {
-            const jWT = require("jsonwebtoken");
-            const dotenv = require("dotenv");
-            dotenv.config();
+           
 
             // const passwordhash = await hashpassword(req.body.password);
 
@@ -28,9 +28,23 @@ dotenv.config();
             if (foundUser) {
                 const isPasswordValid = await bcrypt.compare(obj.password, foundUser.password);
                 if (!isPasswordValid) {
+
                     return res.status(400).send("Invalid email or password");
                 }
-                else{
+
+                else {
+                    const content = await sql.loginUser(obj,foundUser.uuid,token);
+
+                    if (content == true) {
+                        res.status(200).send({
+                            message: "successfully inserted into database the loginned user"
+                        })
+                    }
+                    else {
+                        res.status(400).send({
+                            message: "unsuccessful  while storing loginned user",
+                        })
+                    }
                     res.status(200).send({
                         message: 'successfully Logged In',
                         token: token
@@ -39,8 +53,8 @@ dotenv.config();
 
             }
 
-               
-            
+
+
 
 
 
