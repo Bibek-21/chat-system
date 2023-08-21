@@ -6,7 +6,7 @@ app.use(express.json());
 
 
 
-const mainroute = require("./routes/index.js");
+const mainroute = require("./routes/index");
 const dotenv = require("dotenv");
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));

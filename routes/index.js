@@ -4,9 +4,9 @@
     const express = require("express");
     const router = express.Router();
 
-    const user = require('./studentRoutes');
+    const user = require('./registerusers');
    
-    router.use('/student', user);
+    router.use('/users', user);
   
 
     

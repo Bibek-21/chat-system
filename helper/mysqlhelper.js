@@ -1,6 +1,5 @@
 "use strict";
 const mysql = require('mysql2/promise');
-const sqlstring = require("sqlstring");
 
 ((mysqlHelper)=>{
     let dbClient = null;
@@ -31,20 +30,5 @@ const sqlstring = require("sqlstring");
         }
       };
 
-    mysqlHelper.checkStudent= async(symbolNo)=>{
-      const querystring = sqlstring.format(`select * from students where symbolNo= ? `, [symbolNo]);
-
-      const [sqlquery] = await helper.mysqlHelper.query(querystring)
-      console.log(sqlquery);
-
-
-
-      if (sqlquery[0]) {
-          return true;
-      }
-      else {
-          return false;
-      }
-    }
 
 })(module.exports);
