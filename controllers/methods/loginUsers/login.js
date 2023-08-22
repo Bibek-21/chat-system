@@ -33,6 +33,7 @@ const bcrypt = require("bcrypt");
                 }
 
                 else {
+                    obj.password=foundUser.password;
                     const content = await sql.loginUser(obj,foundUser.uuid,token);
 
                     if (content == true) {
