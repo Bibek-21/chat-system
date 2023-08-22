@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <title>Login</title>
 </head>
+
 <body>
   <div class="navbar">
     <a href="home.html">Home</a>
@@ -15,16 +17,54 @@
   <div class="content">
     <h2>Login</h2>
     <form action="/api-v1/login/loginuser" method="post">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username"><br><br>
+      <label for="userName">Username:</label>
+      <input type="text" id="userName" name="userName"><br><br>
 
       <label for="password">Password:</label>
-      <input type="password" id="passwords" name="password"><br><br>
+      <input type="password" id="password" name="password"><br><br>
 
-      <input type="submit" value="Login" id="signupsubmit">
+      <input type="submit" value="Login" id="submit">
     </form>
   </div>
-  <script src="main.js"></script>
+  <!-- <script src="main.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+  <script>
+    $(document).ready(function () {
+      $('form').submit(function (event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Collect form data
+        const userName = $('#userName').val();
+        const password = $('#password').val();
+
+        const userData = {
+          userName: userName,
+          password: password
+        };
+
+        // Send AJAX request to the API
+        $.ajax({
+          url: 'http://localhost:3000/api-v1/login/loginuser',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: JSON.stringify(userData),
+
+          success: function (response) {
+
+            console.log(userData);
+            // You can handle the success response here (e.g., show a success message)
+          },
+          error: function (error) {
+            console.error("There is an error");
+            // You can handle the error response here (e.g., show an error message)
+          }
+        });
+      });
+    });
+  </script>
 </body>
+
 </html>

@@ -5,7 +5,7 @@ const helper = require("../../../helper/index");
   module.exports = async (obj) => {
     try {
       const { v4: uuidv4 } = require('uuid');
-      const now = new Date().getTime();
+      const now = new Date();
       const userEmail= obj.email;
    const checker = sqlstring.format(`select email from registerusers`)
 
@@ -27,12 +27,13 @@ const helper = require("../../../helper/index");
 
 
 
-        const querystring = sqlstring.format(`INSERT INTO registerusers  (uuid, firstName,lastName, email, password) VALUES (?, ?, ?, ?, ?) `, 
+        const querystring = sqlstring.format(`INSERT INTO registerusers  (uuid, firstName,lastName, email, password, createdAt) VALUES (?, ?, ?, ?, ?, ?) `, 
         [uuidv4(),
         obj.firstName,
         obj.lastName,
         obj.email,
-        obj.password
+        obj.password,
+        now
        ]);
 
 
