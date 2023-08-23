@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysqlHelper = require('./helper/mysqlhelper');
 const exphbr = require("express-handlebars")
-
+const create= require("./controllers/methods/registerUsers/index")
 const cors = require('cors'); // Import the cors module
 const app = express();
 app.use(express.json());
@@ -25,50 +25,50 @@ app.listen(port, () => {
 })
 
 
-function tokenValid () {
-let socketConnected = new Set();
+function tokenValid() {
+    let socketConnected = new Set();
 
-function onconnection(socket) {
-    console.log(socket.id);
+    function onconnection(socket) {
+        console.log(socket.id);
 
-    socketConnected.add(socket.id)
+        socketConnected.add(socket.id)
 
-    io.emit('clients-total', socketConnected.size)
+        io.emit('clients-total', socketConnected.size)
 
-    socket.on('disconnect', () => {     //perform for logout 
-        console.log('socket disconnected ', socket.id);
-        socketConnected.delete(socket.id);
-        io.emit('clients-total', socketConnected.size);
+        socket.on('disconnect', () => {     //perform for logout 
+            console.log('socket disconnected ', socket.id);
+            socketConnected.delete(socket.id);
+            io.emit('clients-total', socketConnected.size);
 
-    })
+        })
 
-    socket.on('message', (data) => {
-        socket.broadcast.emit('chatMessage', data);
-        console.log(data);
-    })
+        socket.on('message', (data) => {
+            socket.broadcast.emit('chatMessage', data);
+            console.log(data);
+        })
 
-    // socket.on('feedback', (data) => {
-    //     socket.broadcast.emit('feedback', data);
-    //     // console.log(data);
-    // })
+        // socket.on('feedback', (data) => {
+        //     socket.broadcast.emit('feedback', data);
+        //     // console.log(data);
+        // })
+    }
+
+
+
+    io.on('connection', onconnection);
 }
 
 
 
-io.on('connection', onconnection);
-}
 
 
-
-
-
- //Loads the handlebars module
+//Loads the handlebars module
 app.engine('hbs', exphbr.engine({
-    layoutsDir: __dirname + 'public/view/layouts',
+    layoutsDir: __dirname + '/views/layouts',
     //new configuration parameter
     extname: 'hbs',
     defaultLayout: 'home',
-    partialsDir: __dirname + 'public/view/partials/',
+    partialsDir: __dirname + '/views/partials/',
 }));
 
 app.set('view engine', 'hbs')     //Sets our app to use the handlebars engine
@@ -85,17 +85,29 @@ app.use(express.static(__dirname + 'public'))
 //Makes the app listen to port 3000
 
 app.get('/', (req, res) => {
-    res.render('./layouts/signup', {layout:'signup',title:'tutorial' });
+    res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
 });
 
-app.post('/', function(req, res){
-    //Grab the request body
-    var body = req.body;
-     
-    var res_body = {
-    firstName: body.firstName,
-    lastName: body.lastName,
-    email: body.email
-    };
-    res.render('./tempUi', res_body);
+app.get('/register/createuser', (req, res) => {
+    res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
 });
+
+app.post('/register/createuser', function (req, res) {
+    //Grab the request body
+    var request = req.body; // send this to backend to store in db
+    create.createUser(request)
+
+    // var res_body = {
+    // firstName: body.firstName,
+    // lastName: body.lastName,
+    // email: body.email,
+    // password:body.password
+    // };
+    // res.render('./tempUi', res_body);   
+});
+
+
+// app.get('/login/loginuser', (req, res) => {
+//     res.render('.//login', { layout: 'login', title: 'loginuser' });
+// });
+

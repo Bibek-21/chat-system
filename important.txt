@@ -38,3 +38,50 @@
       });
     });
   </script>
+
+
+  
+  //signup ko ajax
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      $('form').submit(function (event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+  
+        // Collect form data
+        const firstName = $('#firstName').val();
+        const lastName = $('#lastName').val();
+        const email = $('#email').val();
+        const password = $('#password').val();
+  
+        const userData = {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password
+        };
+  
+        // Send AJAX request to the API
+        $.ajax({
+          url: 'http://localhost:3000/api-v1/register/createuser',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: JSON.stringify(userData),
+  
+          success: function (response) {
+            
+            console.log(userData);
+            // You can handle the success response here (e.g., show a success message)
+          },
+          error: function (error) {
+            console.error("error");
+            // You can handle the error response here (e.g., show an error message)
+          }
+        });
+      });
+    });
+  </script>
