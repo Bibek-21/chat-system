@@ -1,55 +1,70 @@
-// "use strict";
-// const jquery = require("jquery")
-//     (() => {
-//         const submit = document.getElementById("signupsubmit")
+// const socket = io("http:localhost:3000",{});
 
-//         const registerUser = () => {
-//             const signObj = {
-//                 firstName: document.getElementById("firstName"),
-//                 lastName: document.getElementById("lastName"),
-//                 email: document.getElementById("email"),
-//                 password: document.getElementById("password"),
+const socket = io('http://localhost:xxxx', {})
 
 
-//             }
-
-//             jquery.ajax({
-//                 url: 'http://localhost:3000/api-v1/register/createuser',
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//                 body: JSON.stringify(signObj),
-
-//                 success: function (signObj) {
-//                     console.log(signObj);
-//                 },
-//                 error: function (error) {
-//                     console.error(error);
-//                 }
-//             });
+const clientNumber = document.getElementById("client-total");
+const messageContainer = document.getElementById("message-container");
+const nameInput = document.getElementById("name-input");
+const messageForm = document.getElementById("message-form");
+const messageInput = document.getElementById("message-input");
 
 
 
-//         }
+function addMessageToUI(isOwnMessage, data) {
 
-//         // const loginUser = () => {
+    const element = ` 
+    <li class="${isOwnMessage ? "message-right" : "message-left"}">
+        <p class="message">
+            ${data.message}
+            <span> ${data.name} ● ${data.dateTime}
+            </span>
+        </p>
+    </li>`
 
-//         //     const loginObj = {
+    messageContainer.innerHTML += element;
 
-//         //         userName: document.getElementById("userName"),
-//         //         password: document.getElementById("passwords"),
-//         //         submit: document.getElementById("submit")
-
-//         //     }
-//         // }
-
-
-
-//         submit.addEventListener('submit', (e) => {
-//             e.preventDefault();
-//             registerUser();
-//         })
+}
 
 
-//     })
+function sendMessage() {
+    if (messageInput.value === '') return
+
+    const data = {
+        name: nameInput.value,
+        message: messageInput.value,
+        dateTime: new Date().toDateString()
+    };
+
+    socket.emit('message', data);
+    addMessageToUI(true, data);
+
+    messageInput.value = ''
+
+}
+
+
+messageForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+})
+
+
+socket.on('clients-total', (data) => {
+    clientNumber.innerText = `Clients-Total:${data}`;
+})
+
+
+socket.on('chatMessage', (data) => {
+    // console.log("i am here bro am i ?");
+    // console.log(data);
+    addMessageToUI(false, data)
+
+})
+
+
+
+
+
+
+

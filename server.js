@@ -21,3 +21,37 @@ app.listen(port, () => {
     mysqlHelper.init();
     console.log(`Server running on '${port}'`);
 })
+
+
+function tokenValid () {
+let socketConnected = new Set();
+
+function onconnection(socket) {
+    console.log(socket.id);
+
+    socketConnected.add(socket.id)
+
+    io.emit('clients-total', socketConnected.size)
+
+    socket.on('disconnect', () => {     //perform for logout 
+        console.log('socket disconnected ', socket.id);
+        socketConnected.delete(socket.id);
+        io.emit('clients-total', socketConnected.size);
+
+    })
+
+    socket.on('message', (data) => {
+        socket.broadcast.emit('chatMessage', data);
+        console.log(data);
+    })
+
+    // socket.on('feedback', (data) => {
+    //     socket.broadcast.emit('feedback', data);
+    //     // console.log(data);
+    // })
+}
+
+
+
+io.on('connection', onconnection);
+}

@@ -16,7 +16,6 @@ const bcrypt = require("bcrypt");
         try {
            
 
-            // const passwordhash = await hashpassword(req.body.password);
 
             const obj = {
                 userName: req.body.userName,
@@ -38,7 +37,8 @@ const bcrypt = require("bcrypt");
 
                     if (content == true) {
                         res.status(200).send({
-                            message: "successfully inserted into database the loginned user"
+                            message: "successfully inserted into database the loginned user",
+                            token:token
                         })
                     }
                     else {
@@ -46,16 +46,10 @@ const bcrypt = require("bcrypt");
                             message: "unsuccessful  while storing loginned user",
                         })
                     }
-                    // res.status(200).send({
-                    //     message: 'successfully Logged In',
-                    //     token: token
-                    // })
+                  
                 }
 
             }
-
-
-
 
 
 
