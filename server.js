@@ -33,7 +33,10 @@ function tokenValid() {
 
         socketConnected.add(socket.id)
 
-        io.emit('clients-total', socketConnected.size)
+        // io.emit('clients-total', socketConnected.size)
+
+
+        // connect a socket between two users
 
         socket.on('disconnect', () => {     //perform for logout 
             console.log('socket disconnected ', socket.id);
@@ -75,14 +78,15 @@ app.set('view engine', 'hbs')     //Sets our app to use the handlebars engine
 
 //Serves static files (we need it to import a css file)
 app.use(express.static(__dirname + 'public'))
+
+
+
+
+
+
+
+//for registering users related tasks
 //Sets a basic route
-
-// app.get('/', (req, res) => {
-//     res.render('./main', {layout:'index' });
-//     // res.render('./main');
-// });
-
-//Makes the app listen to port 3000
 
 app.get('/', (req, res) => {
     res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
@@ -92,22 +96,38 @@ app.get('/register/createuser', (req, res) => {
     res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
 });
 
-app.post('/register/createuser', function (req, res) {
-    //Grab the request body
-    var request = req.body; // send this to backend to store in db
-    create.createUser(request)
+app.post('/api-v1/register/createuser', (req, res) => {
+    const { firstName, lastName, email, password } = req.body;
 
-    // var res_body = {
-    // firstName: body.firstName,
-    // lastName: body.lastName,
-    // email: body.email,
-    // password:body.password
-    // };
-    // res.render('./tempUi', res_body);   
+    // Simulate database storage
+    users.push({ firstName, lastName, email, password });
+
+    const message = `User ${firstName} ${lastName} successfully registered!`;
+    res.render('./layouts/signup', { message });
 });
 
 
-// app.get('/login/loginuser', (req, res) => {
-//     res.render('.//login', { layout: 'login', title: 'loginuser' });
-// });
+
+//for login related tasks
+
+app.get('/login/loginuser', (req, res) => {
+    res.render('./layouts/login', { layout: 'login', title: 'loginuser' });
+});
+
+app.post('/api-v1/register/createuser', (req, res) => {
+    const { userName,  password } = req.body;
+    
+    // Simulate database storage
+    users.push({ userName, password });
+
+    res.render('./tempUi', { userName  });
+});
+
+
+
+//for token verify or message box  related tasks
+
+app.get('/verify/users', (req, res) => {
+    res.render('./tempUi', { layout: 'verify', title: 'verifyuser' });
+});
 

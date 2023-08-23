@@ -1,6 +1,6 @@
 // const socket = io("http:localhost:3000",{});
 
-const socket = io('http://localhost:xxxx', {})
+const socket = io('http://localhost:3000', {})
 
 
 const clientNumber = document.getElementById("client-total");

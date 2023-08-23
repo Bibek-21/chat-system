@@ -38,7 +38,9 @@ const bcrypt = require("bcrypt");
                     if (content == true) {
                         res.status(200).send({
                             message: "successfully inserted into database the loginned user",
-                            token:token
+                            token:token,
+                            name:foundUser.firstName
+                        
                         })
                     }
                     else {
