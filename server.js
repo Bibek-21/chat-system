@@ -3,6 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysqlHelper = require('./helper/mysqlhelper');
+const exphbr = require("express-handlebars")
+
 const cors = require('cors'); // Import the cors module
 const app = express();
 app.use(express.json());
@@ -55,3 +57,45 @@ function onconnection(socket) {
 
 io.on('connection', onconnection);
 }
+
+
+
+
+
+ //Loads the handlebars module
+app.engine('hbs', exphbr.engine({
+    layoutsDir: __dirname + 'public/view/layouts',
+    //new configuration parameter
+    extname: 'hbs',
+    defaultLayout: 'home',
+    partialsDir: __dirname + 'public/view/partials/',
+}));
+
+app.set('view engine', 'hbs')     //Sets our app to use the handlebars engine
+
+//Serves static files (we need it to import a css file)
+app.use(express.static(__dirname + 'public'))
+//Sets a basic route
+
+// app.get('/', (req, res) => {
+//     res.render('./main', {layout:'index' });
+//     // res.render('./main');
+// });
+
+//Makes the app listen to port 3000
+
+app.get('/', (req, res) => {
+    res.render('./layouts/signup', {layout:'signup',title:'tutorial' });
+});
+
+app.post('/', function(req, res){
+    //Grab the request body
+    var body = req.body;
+     
+    var res_body = {
+    firstName: body.firstName,
+    lastName: body.lastName,
+    email: body.email
+    };
+    res.render('./tempUi', res_body);
+});

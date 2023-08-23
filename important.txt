@@ -1,33 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Login</title>
-</head>
-
-<body>
-  <div class="navbar">
-    <a href="home.html">Home</a>
-    <a href="login.html">Login</a>
-    <a href="signup.html">Signup</a>
-  </div>
-  <div class="content">
-    <h2>Login</h2>
-    <form action="/api-v1/login/loginuser" method="post">
-      <label for="userName">Username:</label>
-      <input type="text" id="userName" name="userName"><br><br>
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password"><br><br>
-
-      <input type="submit" value="Login" id="submit">
-    </form>
-  </div>
-  <!-- <script src="main.js"></script> -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+ //login ko
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
     $(document).ready(function () {
@@ -65,6 +38,3 @@
       });
     });
   </script>
-</body>
-
-</html>
