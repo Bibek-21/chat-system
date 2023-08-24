@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const mysqlHelper = require('./helper/mysqlhelper');
 const exphbr = require("express-handlebars")
 const user = require("./controllers/methods/registerUsers/index")
+const login = require("./controllers/methods/loginUsers/index")
+
 
 const cors = require('cors'); // Import the cors module
 const app = express();
@@ -103,7 +105,6 @@ app.get('/api-v1/register/createuser', (req, res) => {
 
 
 app.post('/api-v1/register/createuser', async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
     const obj = {
 
         firstName: req.body.firstName,
@@ -143,7 +144,33 @@ app.get('/api-v1/login/loginuser', (req, res) => {
     res.render('./layouts/login', { layout: 'login', title: 'loginuser' });
 });
 
-app.post('/api-v1/login/loginuser', (req, res) => {
+app.post('/api-v1/login/loginuser', async (req, res) => {
+    const obj = {
+
+        userName: req.body.userName,
+        password: req.body.password
+
+    }
+    if (!obj.userName || !obj.password) {
+        const message = `Provide Valid Details!`;
+        res.render('./layouts/login', { layout: 'signup', title: 'registeruser', message });
+
+    }
+
+    else {
+        const loginUser = await login.loginUser(obj);
+        console.log(loginUser);
+        if (loginUser == true) {
+            const message = `User ${firstName} ${lastName} successfully registered! Now you can proceed to Login`;
+            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+        }
+        else {
+            const message = `could not register the user`;
+            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+       
+        }
+
+    }
     const { userName, password } = req.body;
 
     res.render('/tempUi', { layout: 'tempUi', title: 'Messenger' });
