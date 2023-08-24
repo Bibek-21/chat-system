@@ -6,18 +6,18 @@ const helper = require("../../../helper/index");
     try {
       const { v4: uuidv4 } = require('uuid');
       const now = new Date();
-      const userEmail= obj.email;
-   const checker = sqlstring.format(`select email from registerusers`)
+      const userEmail = obj.email;
+      const checker = sqlstring.format(`select email from registerusers`)
 
       const [result] = await helper.mysqlHelper.query(checker);
 
-      const addable= result.forEach(element => {
-        if(userEmail==element) return false;
+      const addable = result.forEach(element => {
+        if (userEmail == element) return false;
         else return true;
-        
+
       });
 
-      if (addable) {
+      if (addable && password == null) {
         return false
       }
 
@@ -27,14 +27,14 @@ const helper = require("../../../helper/index");
 
 
 
-        const querystring = sqlstring.format(`INSERT INTO registerusers  (uuid, firstName,lastName, email, password, createdAt) VALUES (?, ?, ?, ?, ?, ?) `, 
-        [uuidv4(),
-        obj.firstName,
-        obj.lastName,
-        obj.email,
-        obj.password,
-        now
-       ]);
+        const querystring = sqlstring.format(`INSERT INTO registerusers  (uuid, firstName,lastName, email, password, createdAt) VALUES (?, ?, ?, ?, ?, ?) `,
+          [uuidv4(),
+          obj.firstName,
+          obj.lastName,
+          obj.email,
+          obj.password,
+            now
+          ]);
 
 
         const [sqlquery] = await helper.mysqlHelper.query(querystring);

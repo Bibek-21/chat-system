@@ -4,7 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysqlHelper = require('./helper/mysqlhelper');
 const exphbr = require("express-handlebars")
-const create= require("./controllers/methods/registerUsers/index")
+const user = require("./controllers/methods/registerUsers/index")
+
 const cors = require('cors'); // Import the cors module
 const app = express();
 app.use(express.json());
@@ -16,7 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors()); // Use the cors middleware to enable CORS
 
-app.use("/api-v1", mainroute);
+app.use(express.static('public')); // Serve files from the 'public' directory
+
+// app.use("/api-v1", mainroute);
 const port = process.env.PORT;
 
 app.listen(port, () => {
@@ -92,42 +95,64 @@ app.get('/', (req, res) => {
     res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
 });
 
-app.get('/register/createuser', (req, res) => {
+app.get('/api-v1/register/createuser', (req, res) => {
+
     res.render('./layouts/signup', { layout: 'signup', title: 'registeruser' });
 });
 
-app.post('/api-v1/register/createuser', (req, res) => {
+
+
+app.post('/api-v1/register/createuser', async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
+    const obj = {
 
-    // Simulate database storage
-    users.push({ firstName, lastName, email, password });
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: req.body.password
 
-    const message = `User ${firstName} ${lastName} successfully registered!`;
-    res.render('./layouts/signup', { message });
+    }
+    if (!obj.firstName || !obj.lastName || !obj.email || !obj.password) {
+        const message = `Provide Valid Details!`;
+        res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+
+    }
+
+    else {
+        const insertUser = await user.createUser(obj);
+        console.log(insertUser);
+        if (insertUser == true) {
+            const message = `User ${firstName} ${lastName} successfully registered! Now you can proceed to Login`;
+            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+        }
+        else {
+            const message = `could not register the user`;
+            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+       
+        }
+
+    }
+
+
 });
-
 
 
 //for login related tasks
 
-app.get('/login/loginuser', (req, res) => {
+app.get('/api-v1/login/loginuser', (req, res) => {
     res.render('./layouts/login', { layout: 'login', title: 'loginuser' });
 });
 
-app.post('/api-v1/register/createuser', (req, res) => {
-    const { userName,  password } = req.body;
-    
-    // Simulate database storage
-    users.push({ userName, password });
+app.post('/api-v1/login/loginuser', (req, res) => {
+    const { userName, password } = req.body;
 
-    res.render('./tempUi', { userName  });
+    res.render('/tempUi', { layout: 'tempUi', title: 'Messenger' });
 });
-
 
 
 //for token verify or message box  related tasks
 
-app.get('/verify/users', (req, res) => {
-    res.render('./tempUi', { layout: 'verify', title: 'verifyuser' });
-});
+// app.get('/verify/users', (req, res) => {
+//     res.render('./tempUi', { layout: 'verify', title: 'verifyuser' });
+// });
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {{!-- <link rel="stylesheet" href="../../public/styles.css"> --}}
+  <link rel="stylesheet" href="../../public/styles.css">
   <title>Signup</title>
 </head>
 <body>
@@ -18,23 +18,29 @@
 
     <form id="registration-from" method="POST" action="/api-v1/register/createuser">
       <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" name="firstName"><br><br>
+      <input type="text" id="firstName" name="firstName" autocomplete="given-name"><br><br>
 
       <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" name="lastName"><br><br>
+      <input type="text" id="lastName" name="lastName" autocomplete="family-name"><br><br>
 
       <label for="email">Email:</label>
       <input type="email" id="email" name="email"><br><br>
 
       <label for="password">Password:</label>
-      <input type="password" id="password" name="password"><br><br>
-
+      <input type="password" id="password" name="password"  autocomplete="current-password"><br><br>
+      {{!-- <input type="button" value="set Token" onclick="setToken()"> --}}
       <input type="submit" value="Signup">
     </form>
   </div>
   {{#if message}}
-    <div>{{message}}</div>
+    <div id="message">{{message}}</div>
+</div>
     {{/if}}
-  <script src="../../public/js/scripts.js"></script>
+  {{!-- <script src="../../public/js/scripts.js"></script> --}}
+  {{!-- <script>
+    function setToken(){
+      localStorage.setItem("new-password", "pasword")
+    }
+  </script> --}}
 </body>
 </html>
