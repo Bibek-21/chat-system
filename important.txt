@@ -161,3 +161,14 @@
     <script src="main.js"></script>
   </body>
 </html>
+
+
+
+friday ko kam migration garniii -->
+
+chat ko databse banaunui from to date data uuid isdelete
+
+chatroom banaunu
+when i select one person the chat room  name that have id mine uuid + his uuid must be opened
+
+
