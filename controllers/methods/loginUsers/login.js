@@ -12,14 +12,17 @@ const bcrypt = require("bcrypt");
 
 
 (() => {
-    module.exports = async (req, res, next) => {
+    module.exports = async (object) => {
         try {
-           
+
 
 
             const obj = {
-                userName: req.body.userName,
-                password: req.body.password
+
+
+                userName: object.userName,
+                password: object.password
+
             };
             const token = jWT.sign({ obj }, process.env.JWT_SECRET_KEY, { expiresIn: '1hr' });
 
@@ -27,28 +30,42 @@ const bcrypt = require("bcrypt");
             if (foundUser) {
                 const isPasswordValid = await bcrypt.compare(obj.password, foundUser.password);
                 if (!isPasswordValid) {
-
-                    return res.status(400).send("Invalid email or password");
+                   
+                    return 0;
                 }
 
                 else {
-                    obj.password=foundUser.password;
-                    const content = await sql.loginUser(obj,foundUser.uuid,token);
+                    const validUser = {
+                        userName: obj.userName,
+                        password: foundUser.password,
+                        uuid:foundUser.uuid,
+                        token:token
+                    }
+                    const content = await sql.loginUser(validUser);
 
                     if (content == true) {
+
+                        return {
+                            status:true,
+                            message: "successfully inserted into database the loginned user",
+                            token: token,
+
+                        };
                         res.status(200).send({
                             message: "successfully inserted into database the loginned user",
-                            token:token,
-                            name:foundUser.firstName
-                        
+                            token: token,
+                            name: foundUser.firstName
+
                         })
                     }
                     else {
+                        return false;
+
                         res.status(400).send({
-                            message: "unsuccessful  while storing loginned user",
+                            message: "unsuccessful  while storing loginned user", //old code
                         })
                     }
-                  
+
                 }
 
             }

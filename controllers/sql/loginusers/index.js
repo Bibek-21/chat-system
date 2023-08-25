@@ -2,7 +2,8 @@
 (() => {
     module.exports = {
         checkUser:require("./checkUser"),
-        loginUser: require("./createLogin")
+        loginUser: require("./createLogin"),
+        readUsers:require("./readUsers")
 
     }
 })();

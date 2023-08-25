@@ -166,7 +166,7 @@
 
 friday ko kam migration garniii -->
 
-chat ko databse banaunui from to date data uuid isdelete
+chat ko databse banaunui userid roomid to date message_body uuid isdelete 
 
 chatroom banaunu
 when i select one person the chat room  name that have id mine uuid + his uuid must be opened

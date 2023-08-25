@@ -2,7 +2,8 @@
 (()=>{
     module.exports= {
 
-        createUser:require("./createuser")
+        createUser:require("./createuser"),
+        readRegisterUser:require("./readRegisteredUsers")
     
     }
 })();

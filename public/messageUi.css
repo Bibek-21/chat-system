@@ -139,8 +139,8 @@ body {
 }
 
 #myname {
-    position: absolute;
-    top: 20px;
-    left:550px;
+    position: relative;
+    top: 45px;
+    left:250px;
   }
   

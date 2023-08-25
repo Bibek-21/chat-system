@@ -24,47 +24,47 @@ app.use(express.static('public')); // Serve files from the 'public' directory
 // app.use("/api-v1", mainroute);
 const port = process.env.PORT;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     mysqlHelper.init();
     console.log(`Server running on '${port}'`);
 })
 
+const io = require('socket.io')(server)
 
-function tokenValid() {
-    let socketConnected = new Set();
+let socketConnected = new Set();
 
-    function onconnection(socket) {
-        console.log(socket.id);
+function onconnection(socket) {
+    console.log(socket.id);
 
-        socketConnected.add(socket.id)
+    socketConnected.add(socket.id)
 
-        // io.emit('clients-total', socketConnected.size)
-
-
-        // connect a socket between two users
-
-        socket.on('disconnect', () => {     //perform for logout 
-            console.log('socket disconnected ', socket.id);
-            socketConnected.delete(socket.id);
-            io.emit('clients-total', socketConnected.size);
-
-        })
-
-        socket.on('message', (data) => {
-            socket.broadcast.emit('chatMessage', data);
-            console.log(data);
-        })
-
-        // socket.on('feedback', (data) => {
-        //     socket.broadcast.emit('feedback', data);
-        //     // console.log(data);
-        // })
-    }
+    // io.emit('clients-total', socketConnected.size)
 
 
+    // connect a socket between two users
 
-    io.on('connection', onconnection);
+    // socket.on('disconnect', () => {     //perform for logout 
+    //     console.log('socket disconnected ', socket.id);
+    //     socketConnected.delete(socket.id);
+    //     io.emit('clients-total', socketConnected.size);
+
+    // })
+
+    socket.on('message', (data) => {
+        socket.broadcast.emit('chatMessage', data);
+        console.log(data);
+    })
+
+    // socket.on('feedback', (data) => {
+    //     socket.broadcast.emit('feedback', data);
+    //     // console.log(data);
+    // })
 }
+
+
+
+io.on('connection', onconnection);
+
 
 
 
@@ -78,6 +78,8 @@ app.engine('hbs', exphbr.engine({
     defaultLayout: 'home',
     partialsDir: __dirname + '/views/partials/',
 }));
+
+// app.set('views', path.join(__dirname, 'views'));
 
 app.set('view engine', 'hbs')     //Sets our app to use the handlebars engine
 
@@ -114,7 +116,7 @@ app.post('/api-v1/register/createuser', async (req, res) => {
 
     }
     if (!obj.firstName || !obj.lastName || !obj.email || !obj.password) {
-        const message = `Provide Valid Details!`;
+        let message = `Provide Valid Details!`;
         res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
 
     }
@@ -122,14 +124,15 @@ app.post('/api-v1/register/createuser', async (req, res) => {
     else {
         const insertUser = await user.createUser(obj);
         console.log(insertUser);
+
         if (insertUser == true) {
-            const message = `User ${firstName} ${lastName} successfully registered! Now you can proceed to Login`;
+            const message = `User ${obj.firstName} ${obj.lastName} successfully registered! Now you can proceed to Login`;
             res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
         }
         else {
             const message = `could not register the user`;
             res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
-       
+
         }
 
     }
@@ -151,29 +154,39 @@ app.post('/api-v1/login/loginuser', async (req, res) => {
         password: req.body.password
 
     }
+    let message = '';
+
     if (!obj.userName || !obj.password) {
-        const message = `Provide Valid Details!`;
-        res.render('./layouts/login', { layout: 'signup', title: 'registeruser', message });
+        message = `Provide Valid Details!`;
+        res.render('./layouts/login', { layout: 'login', title: 'login', message });
 
     }
 
     else {
         const loginUser = await login.loginUser(obj);
-        console.log(loginUser);
-        if (loginUser == true) {
-            const message = `User ${firstName} ${lastName} successfully registered! Now you can proceed to Login`;
-            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
+        if (loginUser == 0) {
+            message = `Provide Valid Details!`;
+            return res.render('./layouts/login', { layout: 'login', title: 'login', message });
         }
+
+        else if (loginUser == false) {
+            message = `could not login the user`;
+            return res.render('./layouts/login', { layout: 'login', title: 'login', message });
+        }
+
+        else if (loginUser.status == true) {
+            const myname = obj.userName;
+            const loggedInUsers = login.readUsers()
+            return res.render('./layouts/tempUi', { layout: 'tempUi', title: 'Messenger', myname, loggedInUsers},);
+        }
+
         else {
-            const message = `could not register the user`;
-            res.render('./layouts/signup', { layout: 'signup', title: 'registeruser', message });
-       
+            return res.render('./layouts/login', { layout: 'login', title: 'login' });
+
         }
 
     }
-    const { userName, password } = req.body;
 
-    res.render('/tempUi', { layout: 'tempUi', title: 'Messenger' });
 });
 
 

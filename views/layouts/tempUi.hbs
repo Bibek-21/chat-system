@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
+    {{!-- {{#if selectedUser}}
+    <title>Chat with {{selectedUser}}</title>
+    {{/if}} --}}
+        <title>Chat App</title>
+
+</head>
+
+<body>
+    <div id="whole-container">
+        <h3 id="myname">{{myname}}</h3>
+
+        <h1>KuraKani 💬</h1>
+
+
+        <div class="main">
+            <div class="name">
+                {{#if loggedInUsers}}
+
+                <select id="userDropdown">
+                    <option value="">Select a User</option>
+                    {{#each loggedInUsers}}
+                    <option value="{{this.id}}">{{this.userName}}</option>
+                    {{/each}}
+                </select>
+
+                {{/if}}
+            </div>
+
+            <ul class="message-container" id="message-container">
+                <!-- Message container contents here -->
+            </ul>
+
+            <form class="message-form" id="message-form">
+                <input type="text" name="message" id="message-input" class="message-input" />
+                <div class="v-divider"></div>
+                <button type="submit" class="send-button">
+                    send <span><i class="fas fa-paper-plane"></i></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {{!--
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js"></script> --}}
+    {{!--
+    <script src="../public/main.js"></script> --}}
+</body>
+
+</html>
