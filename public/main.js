@@ -12,7 +12,7 @@ const socket = io('http://localhost:3000', )
 
 function addMessageToUI(isOwnMessage, data) {      
     let value = isOwnMessage ? 'message-right' : 'message-left'
-    console.log(value)
+    // console.log(value)
     const element = ` 
     <li class="${value}">
         <p class="message">
@@ -25,6 +25,7 @@ function addMessageToUI(isOwnMessage, data) {
     `
 
     messageContainer.innerHTML += element;
+    isOwnMessage='';
     return
 }
 
@@ -38,11 +39,13 @@ function sendMessage() {            // sending message toserver and adding to ui
     };
 
     socket.emit('message', data);
+
+    messageInput.value = '';
     addMessageToUI(true, data);
 
-    messageInput.value = ''
     return
 }
+
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -51,5 +54,11 @@ messageForm.addEventListener('submit', (e) => {
 
 
 socket.on('chat-message', (data) => {
+    console.log("okkkkkkkkkkkk");
+    console.log(`Received message from server to client and message is ${data.message}`);
     addMessageToUI(false, data)
+    data=''
 })
+
+
+

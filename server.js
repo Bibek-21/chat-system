@@ -23,6 +23,7 @@ let session;
 
 const mainroute = require("./routes/index");
 const dotenv = require("dotenv");
+const { log } = require("console");
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,10 +33,14 @@ app.use(express.static("public")); // Serve files from the 'public' directory
 
 // app.use("/api-v1", mainroute);
 const port = process.env.PORT;
+const server = app.listen(port, () => {
+  mysqlHelper.init();
+  console.log(`Server running on '${port}'`);
+});
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
-const io = new Server(server);
+// const io = new Server(server);
 //using session middleware to manage logins 
 // const oneDay = 1000 * 60 * 60 * 24;
 // app.use(sessions({
@@ -70,7 +75,7 @@ const io = new Server(server);
 // });
 
 
-
+const io = require("socket.io")(server)
 //Loads the handlebars module
 app.engine(
   "hbs",
@@ -152,6 +157,8 @@ app.get("/api-v1/login/loginuser", (req, res) => {
 // });
 
 
+
+
 app.post("/api-v1/login/loginuser", async (req, res) => {
   const obj = {
     userName: req.body.userName,
@@ -162,7 +169,8 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
     message = `Provide Valid Details!`;
     res.render("./layouts/login", { layout: "login", title: "login", message });
   } else {
-    const loginUser = await login.loginUser(obj);
+    //it stores the user into database and gives status true and gives a token
+    const loginUser = await login.loginUser(obj); 
     console.log({ loginUser });
     if (loginUser == 0) {
       message = `Provide Valid Details!`;
@@ -183,25 +191,6 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
       const myname = obj.userName;
       const loggedInUsers = await login.readUsers();
 
-
-      io.on('connection', (socket) => {
-        
-          console.log(`User ${obj.userName} connected`);
-
-        // Listen for incoming messages
-        socket.on('message', (data) => {
-          console.log(`Received message from  ${obj.userName} from client to server and socketId is ${socket.id},${data.message}`);;
-
-          socket.broadcast.emit('chat-message',data );
-          return
-        });
-
-
-        // Handle disconnect
-        socket.on('disconnect', () => {
-          console.log(`User ${obj.userName} disconnected`);
-        });
-      });
       return res.render("./layouts/tempUi", {
         layout: "tempUi",
         title: "Messenger",
@@ -212,6 +201,29 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
       return res.render("./layouts/login", { layout: "login", title: "login" });
     }
   }
+
+ 
+  
+
+});
+
+io.on('connection', (socket) => {
+
+  console.log(`User  connected`);
+
+
+  // Listen for incoming messages
+  socket.on('message', (data) => {
+    console.log(`Received message  from client to server and socketId is ${socket.id},${data.message}`);
+    socket.broadcast.emit('chat-message', data);
+  console.log("testing progress11111");
+  });
+
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log(`User  disconnected`);
+  });
 });
 
 //for token verify or message box  related tasks
@@ -219,7 +231,7 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
 // app.get('/verify/users', (req, res) => {
 //     res.render('./tempUi', { layout: 'verify', title: 'verifyuser' });
 // });
-server.listen(port, () => {
-  mysqlHelper.init();
-  console.log(`Server running on '${port}'`);
-});
+// server.listen(port, () => {
+//   mysqlHelper.init();
+//   console.log(`Server running on '${port}'`);
+// });
