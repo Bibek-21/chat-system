@@ -3,7 +3,8 @@
     module.exports= {
 
         createUser:require("./createuser"),
-        readRegisterUser:require("./readRegisteredUsers")
+        readRegisterUser:require("./readRegisteredUsers"),
+        readUsersByEmail:require("./readUsersByEmail")
     
     }
 })();

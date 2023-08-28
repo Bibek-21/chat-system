@@ -172,3 +172,20 @@ chatroom banaunu
 when i select one person the chat room  name that have id mine uuid + his uuid must be opened
 
 
+euta person ley login garxa ani tokrn generate hunxa valid for 3hr example
+ani 3 hrs paxi login ko info nai delete hunxa afai ani yoken hunna
+aba when he wants to select a user then he need to provide the token 
+and if no token then renders login page with message session expired
+
+when he wants to send messsage we check the tok if token is valid
+message is sent if not the login page is rendered with message
+session end 
+
+
+main chai if time vyo vaney login bata aafai delete hunu paryo the token and alll inos
+
+first kam room banauni 
+ani euta manxe select garxa tesle euta room dinxa jun ko uuid is
+string sum of two uuid of the users feri select garda ni tei auna 
+paryo
+

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     uuid: DataTypes.STRING,
     username: DataTypes.STRING,
     password: DataTypes.STRING,
-    token: DataTypes.STRING
+    token: DataTypes.STRING // it is made varchar(500) in workbench
   }, {
     sequelize,
     modelName: 'loginuser',

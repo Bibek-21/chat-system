@@ -3,8 +3,9 @@
     module.exports = {
         loginUser: require("./login"),
         verifyToken:require("./verifyToken"),
-        readUsers:require("./readUsers")
-
+        readUsers:require("./readUsers"),
+        checkUser:require("./checkUser")
+        
     }
 
 })();

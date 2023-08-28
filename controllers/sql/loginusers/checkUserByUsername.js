@@ -1,6 +1,6 @@
 "use strict";
 
-const sqlstring = require("sqlstring")
+const sqlstring = require("sqlstring");
 const mysqlHelper = require("../../../helper/mysqlhelper");
 (() => {
     module.exports = async (email) => {
