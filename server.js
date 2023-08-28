@@ -1,4 +1,6 @@
 const express = require("express");
+const http = require('http')
+const { Server } = require("socket.io");
 const bodyParser = require("body-parser");
 const mysqlHelper = require("./helper/mysqlhelper");
 const exphbr = require("express-handlebars");
@@ -11,6 +13,8 @@ const cors = require("cors"); // Import the cors module
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+
 
 let message = "";
 let session;
@@ -29,11 +33,9 @@ app.use(express.static("public")); // Serve files from the 'public' directory
 // app.use("/api-v1", mainroute);
 const port = process.env.PORT;
 
-const server = app.listen(port, () => {
-  mysqlHelper.init();
-  console.log(`Server running on '${port}'`);
-});
-const io = require("socket.io")(server)
+const server = http.createServer(app);
+
+const io = new Server(server);
 //using session middleware to manage logins 
 // const oneDay = 1000 * 60 * 60 * 24;
 // app.use(sessions({
@@ -44,38 +46,28 @@ const io = require("socket.io")(server)
 // }));
 
 
-// Middleware to authenticate Socket.IO connections
-io.use((socket, next) => {
-  const token = socket.handshake.query.token;
 
-  if (token) {
-    jwt.verify(token, secretKey, (err, decoded) => {
-      if (err) {
-        return next(new Error('Authentication error'));
-      }
-      socket.user = decoded.user; // Attach user information to the socket
-      next();
-    });
-  } else {
-    next(new Error('Authentication token missing'));
-  }
-});
+// io.on('connection', (socket) => {
+//   socket.id=
+//   console.log(`User ${socket.id} connected`);
 
-io.on('connection', (socket) => {
-  console.log(`User ${socket.user} connected`);
+//   // Listen for incoming messages
+//   socket.on('message', (data) => {
+//     console.log(`Received message from ${socket.user}: ${data}`);
+//     // Broadcast the message to all connected clients
+//     io.emit('message', { user: socket.user, message: data });
+//   });
 
-  // Listen for incoming messages
-  socket.on('message', (data) => {
-    console.log(`Received message from ${socket.user}: ${data}`);
-    // Broadcast the message to all connected clients
-    io.emit('message', { user: socket.user, message: data });
-  });
+//   socket.on("console-server", (data)=>{
+//     console.log("receievd")
+//     io.emit("console-client", `${data} is recieved`)
+//   })
 
-  // Handle disconnect
-  socket.on('disconnect', () => {
-    console.log(`User ${socket.user} disconnected`);
-  });
-});
+//   // Handle disconnect
+//   socket.on('disconnect', () => {
+//     console.log(`User ${socket.user} disconnected`);
+//   });
+// });
 
 
 
@@ -186,9 +178,30 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
         title: "login",
         message,
       });
+
     } else if (loginUser.status == true) {
       const myname = obj.userName;
       const loggedInUsers = await login.readUsers();
+
+
+      io.on('connection', (socket) => {
+        
+          console.log(`User ${obj.userName} connected`);
+
+        // Listen for incoming messages
+        socket.on('message', (data) => {
+          console.log(`Received message from  ${obj.userName} from client to server and socketId is ${socket.id},${data.message}`);;
+
+          socket.broadcast.emit('chat-message',data );
+          return
+        });
+
+
+        // Handle disconnect
+        socket.on('disconnect', () => {
+          console.log(`User ${obj.userName} disconnected`);
+        });
+      });
       return res.render("./layouts/tempUi", {
         layout: "tempUi",
         title: "Messenger",
@@ -206,3 +219,7 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
 // app.get('/verify/users', (req, res) => {
 //     res.render('./tempUi', { layout: 'verify', title: 'verifyuser' });
 // });
+server.listen(port, () => {
+  mysqlHelper.init();
+  console.log(`Server running on '${port}'`);
+});

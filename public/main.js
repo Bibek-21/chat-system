@@ -1,37 +1,38 @@
 
-const socket = io('http://localhost:3000/api-v1/login/loginuser', {})
-
-document.cookie = `token=${token}; HttpOnly`
 
 const messageContainer = document.getElementById("message-container");
-const nameInput = document.getElementById("name-input");
 const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
 
+console.log(messageInput.value);
 
 //adding message to UI when the user send the data or receives the data from
 // the server
-function addMessageToUI(isOwnMessage, data) {           
+const socket = io('http://localhost:3000', )
 
+function addMessageToUI(isOwnMessage, data) {      
+    let value = isOwnMessage ? 'message-right' : 'message-left'
+    console.log(value)
     const element = ` 
-    <li class="${isOwnMessage ? "message-right" : "message-left"}">
+    <li class="${value}">
         <p class="message">
             ${data.message}
-            <span> ${data.name} ● ${data.dateTime}
+            <span>  ● ${data.dateTime}
             </span>
         </p>
-    </li>`
+    </li>
+    
+    `
 
     messageContainer.innerHTML += element;
-
+    return
 }
-
 
 function sendMessage() {            // sending message toserver and adding to ui
     if (messageInput.value === '') return
 
     const data = {
-        name: nameInput.value,
+        // name: nameInput.value,
         message: messageInput.value,
         dateTime: new Date().toDateString()
     };
@@ -40,9 +41,8 @@ function sendMessage() {            // sending message toserver and adding to ui
     addMessageToUI(true, data);
 
     messageInput.value = ''
-
+    return
 }
-
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -50,29 +50,6 @@ messageForm.addEventListener('submit', (e) => {
 })
 
 
-
-
-
-socket.on('chatMessage', (data) => {
-    // console.log("i am here bro am i ?");
-    // console.log(data);
+socket.on('chat-message', (data) => {
     addMessageToUI(false, data)
-
 })
-
-
-
-// const socket = io('http://your-server.com', {
-//   // No need to send the token here, it will be sent automatically with cookies
-// });
-
-// // Example: Sending a message to the server
-// const message = "Hello, Server!";
-// socket.emit('message', message);
-
-
-
-
-
-
-

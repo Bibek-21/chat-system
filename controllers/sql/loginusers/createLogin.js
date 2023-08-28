@@ -20,28 +20,23 @@ const jWT = require("jsonwebtoken");
       );
 
       const [data] = await helper.mysqlHelper.query(checker);
-
-      if (data[0].userName == obj.userName) {
+      if (data.length>0) {
         let loggedInUser = data[0]
 
         return loggedInUser;
       }
       else {
-        loggedInUser = false
-
-        return loggedInUser;
-      }
+      
+      
       // const loggedInUser = data.forEach((element) => {
       //   if (obj.userName == element.userName) return data[0];
       //   else return false;
       // });
 
 
-      if (!loggedInUser && obj.password == null) {
+      if (obj.userName==null || obj.password == null) {
         return false;
-      } else if (loggedInUser) {
-        return loggedInUser;
-      } else {
+      }  else {
         const sqlquery = sqlstring.format(
           "INSERT INTO loginusers (uuid, userName, password,token, createdAt,updatedAt) VALUES (?, ?, ?, ?, ? ,?)",
           [obj.uuid, obj.userName, obj.password, token, now, new Date()]
@@ -55,7 +50,7 @@ const jWT = require("jsonwebtoken");
         } else {
           return false;
         }
-      }
+      }}
     } catch (error) {
       throw error;
     }
