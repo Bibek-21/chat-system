@@ -33,47 +33,51 @@ const server = app.listen(port, () => {
   mysqlHelper.init();
   console.log(`Server running on '${port}'`);
 });
+const io = require("socket.io")(server)
 //using session middleware to manage logins 
-const oneDay = 1000 * 60 * 60 * 24;
-app.use(sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:true,
-    cookie: { maxAge: oneDay },
-    resave: false 
-}));
+// const oneDay = 1000 * 60 * 60 * 24;
+// app.use(sessions({
+//     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+//     saveUninitialized:true,
+//     cookie: { maxAge: oneDay },
+//     resave: false 
+// }));
 
-const io = require("socket.io")(server);
 
-let socketConnected = new Set();
+// Middleware to authenticate Socket.IO connections
+io.use((socket, next) => {
+  const token = socket.handshake.query.token;
 
-function onconnection(socket) {
-  console.log(socket.id);
+  if (token) {
+    jwt.verify(token, secretKey, (err, decoded) => {
+      if (err) {
+        return next(new Error('Authentication error'));
+      }
+      socket.user = decoded.user; // Attach user information to the socket
+      next();
+    });
+  } else {
+    next(new Error('Authentication token missing'));
+  }
+});
 
-  socketConnected.add(socket.id);
+io.on('connection', (socket) => {
+  console.log(`User ${socket.user} connected`);
 
-  // io.emit('clients-total', socketConnected.size)
-
-  // connect a socket between two users
-
-  // socket.on('disconnect', () => {     //perform for logout
-  //     console.log('socket disconnected ', socket.id);
-  //     socketConnected.delete(socket.id);
-  //     io.emit('clients-total', socketConnected.size);
-
-  // })
-
-  socket.on("message", (data) => {
-    socket.broadcast.emit("chatMessage", data);
-    console.log(data);
+  // Listen for incoming messages
+  socket.on('message', (data) => {
+    console.log(`Received message from ${socket.user}: ${data}`);
+    // Broadcast the message to all connected clients
+    io.emit('message', { user: socket.user, message: data });
   });
 
-  // socket.on('feedback', (data) => {
-  //     socket.broadcast.emit('feedback', data);
-  //     // console.log(data);
-  // })
-}
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log(`User ${socket.user} disconnected`);
+  });
+});
 
-io.on("connection", onconnection);
+
 
 //Loads the handlebars module
 app.engine(
@@ -147,13 +151,13 @@ app.get("/api-v1/login/loginuser", (req, res) => {
   res.render("./layouts/login", { layout: "login", title: "loginuser" });
 });
 
-app.get('/api-v1/login/loginuser',(req,res) => {
-  session=req.session;
-  if(session.userid){
-    res.render("./layouts/login", { layout: "login", title: "loginuser" });
-  }else
-  res.render("./layouts/login", { layout: "login", title: "login", message });
-});
+// app.get('/api-v1/login/loginuser',(req,res) => {
+//   session=req.session;
+//   if(session.userid){
+//     res.render("./layouts/login", { layout: "login", title: "loginuser" });
+//   }else
+//   res.render("./layouts/login", { layout: "login", title: "login", message });
+// });
 
 
 app.post("/api-v1/login/loginuser", async (req, res) => {

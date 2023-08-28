@@ -1,17 +1,17 @@
-// const socket = io("http:localhost:3000",{});
 
-const socket = io('http://localhost:8080', {})
+const socket = io('http://localhost:3000/api-v1/login/loginuser', {})
 
+document.cookie = `token=${token}; HttpOnly`
 
-const clientNumber = document.getElementById("client-total");
 const messageContainer = document.getElementById("message-container");
 const nameInput = document.getElementById("name-input");
 const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
 
 
-
-function addMessageToUI(isOwnMessage, data) {
+//adding message to UI when the user send the data or receives the data from
+// the server
+function addMessageToUI(isOwnMessage, data) {           
 
     const element = ` 
     <li class="${isOwnMessage ? "message-right" : "message-left"}">
@@ -27,7 +27,7 @@ function addMessageToUI(isOwnMessage, data) {
 }
 
 
-function sendMessage() {
+function sendMessage() {            // sending message toserver and adding to ui
     if (messageInput.value === '') return
 
     const data = {
@@ -50,9 +50,7 @@ messageForm.addEventListener('submit', (e) => {
 })
 
 
-// socket.on('clients-total', (data) => {
-//     clientNumber.innerText = `Clients-Total:${data}`;
-// })
+
 
 
 socket.on('chatMessage', (data) => {
@@ -62,37 +60,19 @@ socket.on('chatMessage', (data) => {
 
 })
 
-// messageInput.addEventListener("focus", (e) => {
-//     e.preventDefault();
-//     socket.emit("feedback", {
-//         feedback: `✍ ${nameInput.name} is typing a message....`
-//     })
-// })
 
 
-// messageInput.addEventListener("keypress", (e) => {
-//     e.preventDefault();
-//     socket.emit("feedback", {
-//         feedback: `✍ ${nameInput.name} is typing a message....`
-//     })
-// })
+// const socket = io('http://your-server.com', {
+//   // No need to send the token here, it will be sent automatically with cookies
+// });
 
-// messageInput.addEventListener("blur", (e) => {
-//     e.preventDefault();
-//     socket.emit("feedback", {
-//         feedback: ''
-//     })
-// })
-
-socket.on("feedback",(data)=>{
-    const elements= `  <li class="message-feedback">
-    <p class="feedback" id="feedback"> ${data.feedback}</p>
-  </li>`
-  messageContainer.innerHTML+= elements
-})
+// // Example: Sending a message to the server
+// const message = "Hello, Server!";
+// socket.emit('message', message);
 
 
-// function clearFeedback(){
 
-//     document.querySelectorAll
-// }
+
+
+
+

@@ -21,16 +21,26 @@ const jWT = require("jsonwebtoken");
 
       const [data] = await helper.mysqlHelper.query(checker);
 
-      const notAddable = data.forEach((element) => {
-        if (obj.userName == element.userName) return data[0];
-        else return false;
-      });
+      if (data[0].userName == obj.userName) {
+        let loggedInUser = data[0]
 
-      
-      if (!notAddable && obj.password == null) {
+        return loggedInUser;
+      }
+      else {
+        loggedInUser = false
+
+        return loggedInUser;
+      }
+      // const loggedInUser = data.forEach((element) => {
+      //   if (obj.userName == element.userName) return data[0];
+      //   else return false;
+      // });
+
+
+      if (!loggedInUser && obj.password == null) {
         return false;
-      } else if (notAddable) {
-        return true;
+      } else if (loggedInUser) {
+        return loggedInUser;
       } else {
         const sqlquery = sqlstring.format(
           "INSERT INTO loginusers (uuid, userName, password,token, createdAt,updatedAt) VALUES (?, ?, ?, ?, ? ,?)",
