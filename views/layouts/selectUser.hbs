@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .select-wrapper {
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Chat System</h1>
+        <div class="select-wrapper">
+            <label for="userDropdown1">Select a User:</label>
+            <select id="userDropdown1">
+                <option value="">Select a User</option>
+                {{#each loggedInUsers}}
+                <option value="{{userName}}">{{userName}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <button id="startChatBtn">Start Chat</button>
+    </div>
+
+   <script>
+    const userDropdown = document.getElementById('userDropdown1');
+    const startChatBtn = document.getElementById('startChatBtn');
+
+    startChatBtn.addEventListener('click', () => {
+        const selectedUser = userDropdown.value;
+        if (selectedUser) {
+            // Redirect to main chat page with selected user
+            window.location.href = `/chat?user=${selectedUser}`;
+        }
+    });
+</script>
+</body>
+</html>
+

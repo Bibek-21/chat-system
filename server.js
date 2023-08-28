@@ -165,10 +165,15 @@ app.post("/api-v1/login/loginuser", async (req, res) => {
     password: req.body.password,
   };
 
-  if (!obj.userName || !obj.password) {
+  if (!obj.userName || !obj.password) {       //if both field are null
     message = `Provide Valid Details!`;
     res.render("./layouts/login", { layout: "login", title: "login", message });
-  } else {
+  }
+  // else if(obj.username||obj.password){
+  //   const usernameExists= await user.readUsersByEmail
+  // }
+  
+  else {
     //it stores the user into database and gives status true and gives a token
     const loginUser = await login.loginUser(obj); 
     console.log({ loginUser });
