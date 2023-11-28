@@ -17,13 +17,11 @@ app.use(cookieParser());
 
 
 let message = "";
-let session;
 
 
 
-const mainroute = require("./routes/index");
+// const mainroute = require("./routes/index");
 const dotenv = require("dotenv");
-const { log } = require("console");
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 
