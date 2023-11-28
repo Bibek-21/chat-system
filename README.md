@@ -13,7 +13,6 @@ The Web Application is a dynamic and data-driven platform built using Node.js, H
 - **Handlebars Templates:** Utilizes Handlebars (hbs) as the template engine for dynamic content rendering.
 - **MySQL Database:** Stores user data and other application-related information in a MySQL database.
 - **User Authentication:** Implements a straightforward login method for user 
-- **Personalized Content:** Displays personalized content based on user login status.
 
 ## Technologies Used
 
